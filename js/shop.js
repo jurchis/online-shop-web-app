@@ -1,14 +1,34 @@
 window.Shop = {
     API_BASE_URL: "http://localhost:8085",
 
-    //function that will make an ajax request
-
     getProducts: function () {
         $.ajax({
             url: Shop.API_BASE_URL + "/products"
+            // default ajax method: "GET"
         }).done(function (response) {
             console.log(response);
+
+            Shop.displayProducts(response.content);
         });
+    },
+
+    addProductToCart: function (productId) {
+        var request = {
+
+            //todo: take customer id in a dynamical manner
+            customerId: 91,
+            productId: productId
+        };
+
+        $.ajax({
+            url:Shop.API_BASE_URL + "/carts",
+            method: "PUT",
+            //we are sending content in body so we are announcing it
+            contentType:"application/json",
+            data: JSON.stringify(request)
+        }).done(function () {
+            window.location.replace("cart.html")
+        })
     },
 
     getProductHtml: function (product) {
@@ -19,7 +39,7 @@ window.Shop = {
                         </div>
                         <h2><a href="">${product.name}</a></h2>
                         <div class="product-carousel-price">
-                            <ins>$${product.price}</ins>
+                            <ins>$${product.price}</ins> 
                         </div>  
                         
                         <div class="product-option-shop">
@@ -27,6 +47,14 @@ window.Shop = {
                         </div>                       
                     </div>
                 </div>`
+    },
+
+    displayProducts: function (products) {
+        var productsHtml = "";
+
+        products.forEach(oneProduct => productsHtml += Shop.getProductHtml(oneProduct));
+
+        $(".single-product-area .row:first-child").html(productsHtml);
     }
 };
 
