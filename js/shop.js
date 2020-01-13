@@ -21,10 +21,10 @@ window.Shop = {
         };
 
         $.ajax({
-            url:Shop.API_BASE_URL + "/carts",
+            url: Shop.API_BASE_URL + "/carts",
             method: "PUT",
             //we are sending content in body so we are announcing it
-            contentType:"application/json",
+            contentType: "application/json",
             data: JSON.stringify(request)
         }).done(function () {
             window.location.replace("cart.html")
@@ -55,7 +55,18 @@ window.Shop = {
         products.forEach(oneProduct => productsHtml += Shop.getProductHtml(oneProduct));
 
         $(".single-product-area .row:first-child").html(productsHtml);
+    },
+
+    bindEvents: function () {
+        $(".single-product-area").delegate(".add_to_cart_button", "click", function (event) {
+            event.preventDefault();
+
+            let productId = $(this).data("product_id");
+            Shop.addProductToCart(productId);
+
+        });
     }
 };
 
 Shop.getProducts();
+Shop.bindEvents();
